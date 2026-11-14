@@ -5,11 +5,14 @@
 </style></head><body><main><h1>📡 EUR/USD Signal Lab</h1><p class="muted">Минутные котировки Twelve Data · исследовательский сигнал на 5 минут · без автосделок</p>
 <section class="card"><div class="muted" style="text-align:center">СИГНАЛ</div><div id="signal" class="signal wait">ОЖИДАНИЕ</div><div id="detail" class="muted" style="text-align:center">Введи API-ключ и запусти анализ.</div><hr><div class="grid"><div class="metric"><small>Цена</small><b id="price">—</b></div><div class="metric"><small>Оценка эвристики*</small><b id="conf">—</b></div><div class="metric"><small>RSI 14</small><b id="rsi">—</b></div><div class="metric"><small>EMA 9 / 21</small><b id="ema">—</b></div></div>
 <div class="grid"><div class="metric"><small>Автообновление</small><b id="autostatus">Выключено</b></div><div class="metric"><small>Следующий запрос</small><b id="countdown">—</b></div></div>
-<input id="key" type="password" autocomplete="off" placeholder="API key Twelve Data (не публикуется)"><button id="go">ПОЛУЧИТЬ СВЕЧИ И АНАЛИЗИРОВАТЬ</button><button id="toggle" style="background:#26364d">ВКЛЮЧИТЬ АВТООБНОВЛЕНИЕ</button><div id="status">Статус: котировки ещё не запрошены.</div></section>
+<input id="key" type="password" autocomplete="off" placeholder="API key Twelve Data (сохранится на этом устройстве)"><button id="go">ПОЛУЧИТЬ СВЕЧИ И АНАЛИЗИРОВАТЬ</button><button id="toggle" style="background:#26364d">ВКЛЮЧИТЬ АВТООБНОВЛЕНИЕ</button><div id="status">Статус: котировки ещё не запрошены.</div></section>
 <section class="card"><h3>📊 Статистика сигналов (5 минут)</h3><div class="stats"><div class="metric"><small>Успехи</small><b id="wins">0</b></div><div class="metric"><small>Неуспехи</small><b id="losses">0</b></div><div class="metric"><small>Ничьи</small><b id="draws">0</b></div></div><p class="muted" id="rate">Результатов пока нет.</p><button id="reset" style="background:#26364d">СБРОСИТЬ СТАТИСТИКУ</button></section>
 <section class="card"><p class="warn">⚠️ Сигнал не гарантирует выигрыш. «Оценка эвристики» не является доказанной вероятностью. Бинарные опционы рискованны; не используй сигналы как финансовую рекомендацию.</p><p class="muted">*Простая комбинация EMA 9/21, RSI 14, импульса и минимального разрыва EMA. Если условия недостаточно сильные — бот показывает ожидание. Статистика сравнивает цену входа и цену через 5 минут; это не backtest и не доходность торгового счёта. Данные статистики сохраняются локально в браузере.</p></section></main>
 <script>
 const $=id=>document.getElementById(id);
+const API_KEY_STORAGE='eurusd_signal_lab_api_key_v1';
+try{$('key').value=localStorage.getItem(API_KEY_STORAGE)||''}catch(e){}
+$('key').addEventListener('input',()=>{try{localStorage.setItem(API_KEY_STORAGE,$('key').value)}catch(e){$('status').textContent='Safari не разрешил сохранение ключа. Проверь режим приватного просмотра.'}});
 let auto=false,intervalId=null,tickId=null,seconds=60,requestBusy=false,pending=[];
 const KEY_STATS='eurusd_signal_lab_stats_v2';
 function getStats(){try{return JSON.parse(localStorage.getItem(KEY_STATS)||'{"wins":0,"losses":0,"draws":0}')}catch{return {wins:0,losses:0,draws:0}}}
